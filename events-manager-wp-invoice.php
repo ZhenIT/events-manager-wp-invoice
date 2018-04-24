@@ -2,7 +2,7 @@
 /*
 Plugin Name: Events Manager wp-invoice bridge
 Plugin URI: http://zhenit.com/
-Description: Create invoices for booking done in eventsmanager
+Description: Create invoices for bookings done in eventsmanager
 Version: 1.0
 Author: Mikel Martin <mikel@zhenit.com>
 Author URI: http://ZhenIT.com/

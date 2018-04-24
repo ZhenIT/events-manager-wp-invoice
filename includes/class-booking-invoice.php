@@ -96,6 +96,17 @@ class EMWI_Booking
             );
             $invoice->line_item(apply_filters('emwi_add_invoice_line', $line, $booked_ticket));
         }
+        if($EM_Booking->booking_meta['coupon']['coupon_discount']>0){
+            $price = -1 * $EM_Booking->booking_meta['coupon']['coupon_discount'];
+            $tax_included = $EM_Booking->booking_meta['coupon']['coupon_tax']=='post';
+            $line = array(
+                'name'     => $EM_Booking->booking_meta['coupon']['coupon_name'],
+                'quantity' => 1,
+                'price'    => $tax_included ? $price * (100 / (100 + $tax_rate)) : $price,
+                'tax_rate' => $tax_rate
+            );
+            $invoice->add_discount(apply_filters('emwi_add_coupon_invoice_line', $line, $EM_Booking->booking_meta['coupon']));
+        }
         //$invoice->set('subtotal', $EM_Booking->booking_price);
         $invoice_args =
             array(
