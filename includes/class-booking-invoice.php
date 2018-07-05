@@ -119,13 +119,15 @@ class EMWI_Booking
         $invoice->set($invoice_args);
         $invoice = apply_filters('emwi_before_save_invoice', $invoice, $EM_Booking, $EM_Event);
         $invoice->save_invoice();
-
-        $event_note   = sprintf(__('%s paid at booking', 'emwi'),
-            WPI_Functions::currency_format(abs($EM_Booking->booking_price), $invoice->data['invoice_id']));
-        $event_amount = (float)$EM_Booking->get_total_paid();
-        $event_type   = 'add_payment';
+        $payment_args = array(
+            'attribute' => 'balance',
+            'note' => sprintf(__('%s paid at booking', 'emwi'), WPI_Functions::currency_format(abs($EM_Booking->booking_price), $invoice->data['invoice_id'])),
+            'amount'=>(float)$EM_Booking->get_total_paid(),
+            'type' => 'add_payment'
+        );
+        $payment_args = apply_filters('emwi_before_save_invoice_payment',$payment_args, $EM_Booking, $EM_Event);
         /** Log balance changes */
-        $invoice->add_entry("attribute=balance&note=$event_note&amount=$event_amount&type=$event_type");
+        $invoice->add_entry(build_query($payment_args));
         $invoice->save_invoice();
         /** ... and mark invoice as paid */
         wp_invoice_mark_as_paid($invoice->data['invoice_id'], $check = true);
